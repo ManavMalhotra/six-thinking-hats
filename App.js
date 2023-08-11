@@ -2,44 +2,16 @@ import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 
+import Main from "./components/Main";
 import TimerComponent from "./components/TimerComponent";
 import HatSelector from "./components/HatSelector";
 import Menu from "./components/Menu";
 import HatColor from "./components/HatColor";
 
 export default function App() {
-  let [admin, setAdmin] = useState(true);
+  let [admin, setAdmin] = useState(false);
   return (
-    <SafeAreaView style={styles.container}>
-      {admin ? (
-        <React.Fragment>
-          <View style={styles.top_container}>
-            <TimerComponent />
-          </View>
-          <View style={styles.middle_container}>
-            <View style={styles.hatSelectorContainer}>
-              <HatSelector />
-            </View>
-          </View>
-          <View style={styles.bottom_container}>
-            <Menu />
-          </View>
-        </React.Fragment>
-      ) : (
-        <>
-          <View style={styles.top_container}>
-            <TimerComponent />
-          </View>
-          <View style={styles.middle_container}>
-            <HatColor />
-          </View>
-          <View style={styles.bottom_container}>
-            <Menu />
-          </View>
-        </>
-      )}
-      <StatusBar style="auto" />
-    </SafeAreaView>
+    <Main />
   );
 }
 
