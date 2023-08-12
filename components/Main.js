@@ -5,170 +5,177 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
-
 import { io } from "socket.io-client";
 
 const Main = () => {
-  let url = "http://localhost:8000/";
+  const url = "http://192.168.100.17:8000/";
   const [socket, setSocket] = useState();
-  const [code, setCode] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [joining, setJoining] = useState(false);
+  const [joined, setJoined] = useState(false);
+  const [usersInRoom, setUsersInRoom] = useState([]);
+
+  const handleRoomJoined = (room) => {
+    setRoomId(room.roomId);
+    setUsersInRoom(Object.values(room.users)); // Convert object values to an array
+    setJoined(true);
+    setJoining(false);
+  };
+
+  const assignHatRoles = (users) => {
+    const hatColors = ["blue", "red", "green", "yellow", "purple", "orange"];
+    const assignedHatRoles = {};
+
+    const currentUserIds = Object.keys(users);
+    currentUserIds.forEach((userId, index) => {
+      const hatRole =
+        index === 0
+          ? "blue"
+          : hatColors[Math.floor(Math.random() * hatColors.length)];
+      assignedHatRoles[userId] = { ...users[userId], hatRole };
+    });
+
+    return assignedHatRoles;
+  };
 
   useEffect(() => {
     const s = io(url);
     setSocket(s);
 
-    s.on("connection", () => {
-      console.log("connected");
-    });
     return () => {
       s.disconnect();
     };
   }, []);
 
-  const handleJoin = () => {};
+  useEffect(() => {
+    if (joined) {
+      socket.on("roomJoined", (data) => {
+        handleRoomJoined(data.room);
+      });
+    }
+  }, [joined]);
 
-  const handleCreate = () => {};
+  useEffect(() => {
+    if (joining) {
+      socket.on("roomCreated", (data) => {
+        console.log(data.roomId);
+        setRoomId(data.roomId);
+        setJoined(true); // Set joined to true when room is created
+        setJoining(false);
+      });
+    }
+  }, [joining]);
+
+  const handleJoin = () => {
+    socket.emit(
+      "joinRoom",
+      { roomId: roomId, userId: socket.id },
+      (data) => {}
+    );
+
+    socket.on("roomJoined", (data) => {
+      handleRoomJoined(data.room);
+    });
+  };
+
+  const handleCreate = () => {
+    setJoining(true);
+
+    socket.emit("createRoom", { userId: socket.id }, (data) => {
+      const usersWithHatRoles = assignHatRoles(data.room.users);
+      const updatedRoom = { ...data.room, users: usersWithHatRoles };
+
+      handleRoomJoined(updatedRoom);
+    });
+  };
+
+  const handleRoomCreated = (room) => {
+    setRoomId(room.roomId);
+    setUsersInRoom(Object.values(room.users));
+    setJoined(true);
+    setJoining(false);
+    console.log(usersInRoom)
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.codePrompt}>
-        <Text style={styles.codeText}>Enter code to join chat</Text>
-        <View style={styles.codeInput}>
-          {Array(6)
-            .fill()
-            .map((_, i) => (
-              <TextInput
-                key={i}
-                style={styles.codeDigit}
-                maxLength={1}
-                keyboardType="numeric"
-                onChangeText={(text) => {
-                  setCode(code + text);
-                }}
-              />
+    <SafeAreaView style={styles.container}>
+      {joining && !joined ? (
+        <Text style={styles.joining}>Joining</Text>
+      ) : joined ? (
+        <View>
+          <Text style={styles.roomIdText}>Room ID: {roomId}</Text>
+          <Text style={styles.usersTitle}>Users in the room:</Text>
+          <Text style={styles.usersList}>
+            {usersInRoom.map((user) => (
+              <Text key={user.id}>
+                {user.id} - Hat: {user.hatRole}
+              </Text>
             ))}
+          </Text>
         </View>
-        <TouchableOpacity style={styles.inviteButton} onPress={handleJoin}>
-          <Text style={styles.inviteText}>Join</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      ) : (
+        <View>
+          <View style={styles.codePrompt}>
+            <TextInput
+              style={styles.codeTextBox}
+              onChangeText={(text) => {
+                setRoomId(text);
+              }}
+              placeholder="Enter Code"
+            />
+            <TouchableOpacity onPress={handleJoin}>
+              <Text>Join</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.createSession}>
+            <TouchableOpacity onPress={handleCreate}>
+              <Text>Create</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
     padding: 20,
   },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#333333",
-    marginVertical: 10,
-  },
-  searchInput: {
-    flex: 1,
-    color: "#FFFFFF",
-    paddingHorizontal: 20,
-  },
-  historyButton: {
-    width: 80,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
-    backgroundColor: "#666666",
-  },
-  historyText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
-  chatCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 80,
-    borderRadius: 10,
-    backgroundColor: "#333333",
-    marginVertical: 10,
-  },
-  profilePic: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginHorizontal: 10,
-    backgroundColor: "#666666",
-  },
-  chatInfo: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  chatName: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  chatMessage: {
-    color: "#FFFFFF",
-    fontSize: 14,
-  },
   codePrompt: {
-    height: 80,
-    marginTop: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  codeText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  codeInput: {
     flexDirection: "row",
-    alignItems: "center",
+    gap: 10,
+    margin: 10,
   },
-  codeDigit: {
-    width: 40,
-    height: 40,
-    marginHorizontal: 10,
+  codeTextBox: {
+    borderWidth: 1,
+    borderColor: "black",
     borderRadius: 5,
-    backgroundColor: "#666666",
-    color: "#FFFFFF",
-    fontSize: 18,
+    padding: 5,
+    width: 200,
+  },
+  createSession: {
+    margin: 10,
+  },
+  joining: {
+    fontSize: 20,
+    fontWeight: "bold",
     textAlign: "center",
   },
-  inviteButton: {
-    width: 80,
-    height: 40,
-    marginTop: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    backgroundColor: "#666666",
+  roomIdText: {
+    fontSize: 16,
+    marginBottom: 10,
   },
-  inviteText: {
-    color: "#FFFFFF",
+  usersTitle: {
+    fontSize: 16,
     fontWeight: "bold",
   },
-  createButton: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    backgroundColor: "#666666",
-  },
-
-  createText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 18,
+  usersList: {
+    marginLeft: 20,
   },
 });
 
