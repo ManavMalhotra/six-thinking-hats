@@ -7,12 +7,11 @@ import TimerComponent from "./components/TimerComponent";
 import HatSelector from "./components/HatSelector";
 import Menu from "./components/Menu";
 import HatColor from "./components/HatColor";
+import SessionScreen from "./components/SessionScreen";
 
 export default function App() {
   let [admin, setAdmin] = useState(false);
-  return (
-    <Main />
-  );
+  return <SessionScreen />;
 }
 
 const styles = StyleSheet.create({

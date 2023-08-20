@@ -11,6 +11,7 @@ import { io } from "socket.io-client";
 
 const Main = () => {
   const url = "http://192.168.100.17:8000/";
+  const [name, setName] = useState();
   const [socket, setSocket] = useState();
   const [roomId, setRoomId] = useState("");
   const [joining, setJoining] = useState(false);
@@ -83,12 +84,16 @@ const Main = () => {
   const handleCreate = () => {
     setJoining(true);
 
-    socket.emit("createRoom", { userId: socket.id }, (data) => {
-      const usersWithHatRoles = assignHatRoles(data.room.users);
-      const updatedRoom = { ...data.room, users: usersWithHatRoles };
+    socket.emit(
+      "createRoom",
+      { name, id: socket.id, hatRole: "blue" },
+      (data) => {
+        const usersWithHatRoles = assignHatRoles(data.room.users);
+        const updatedRoom = { ...data.room, users: usersWithHatRoles };
 
-      handleRoomJoined(updatedRoom);
-    });
+        handleRoomJoined(updatedRoom);
+      }
+    );
   };
 
   const handleRoomCreated = (room) => {
@@ -96,9 +101,13 @@ const Main = () => {
     setUsersInRoom(Object.values(room.users));
     setJoined(true);
     setJoining(false);
-    console.log(usersInRoom)
+    console.log(usersInRoom);
   };
-
+  if ((name && socket) !== undefined) {
+    console.log("Name: ", name);
+    console.log("Room ID: ", roomId);
+    console.log("Socket Id: ", socket.id);
+  }
   return (
     <SafeAreaView style={styles.container}>
       {joining && !joined ? (
@@ -110,13 +119,21 @@ const Main = () => {
           <Text style={styles.usersList}>
             {usersInRoom.map((user) => (
               <Text key={user.id}>
-                {user.id} - Hat: {user.hatRole}
+                {user.id} - Hat: {user.hatRole}{"\n"}
               </Text>
             ))}
           </Text>
         </View>
       ) : (
         <View>
+          <Text style={{marginTop: 100}}>Enter Name: </Text>
+          <TextInput
+            style={styles.codeTextBox}
+            onChangeText={(text) => {
+              setName(text);
+            }}
+            placeholder="Enter Name"
+          />
           <View style={styles.codePrompt}>
             <TextInput
               style={styles.codeTextBox}
