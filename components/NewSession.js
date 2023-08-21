@@ -30,7 +30,7 @@ const NewSession = ({ navigation }) => {
     const data = { userId, title, description, duration, capacity };
 
     socket.emit("createRoom", data);
-    navigation.navigate("Home");
+    navigation.navigate("Participants");
   };
 
   return (

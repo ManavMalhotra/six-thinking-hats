@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import NewSession from "./components/NewSession";
 import JoinSession from "./components/JoinSession";
+import ParticipantsScreen from "./components/ParticipantsScreen";
 
 const App = () => {
   const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
@@ -27,6 +28,7 @@ const App = () => {
         <Stack.Screen name="Home" component={SessionScreen} />
         <Stack.Screen name="NewSession" component={NewSession} />
         <Stack.Screen name="JoinSession" component={JoinSession} />
+        <Stack.Screen name="Participants" component={ParticipantsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

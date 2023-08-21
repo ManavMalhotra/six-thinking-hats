@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, Button } from "react-native";
 import { Image } from "expo-image";
+
 const SessionScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
