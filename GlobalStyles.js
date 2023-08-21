@@ -1,12 +1,13 @@
+
 /* fonts */
 export const FontFamily = {
-  rubikRegular: "Rubik-Regular",
   manropeMedium: "Manrope-Medium",
   manropeSemiBold: "Manrope-SemiBold",
+  rubikRegular: "Rubik-Regular",
 };
 /* font sizes */
 export const FontSize = {
-  size_2xs_4: 10,
+  size_base: 16,
 };
 /* Colors */
 export const Color = {
