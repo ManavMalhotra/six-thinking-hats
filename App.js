@@ -1,30 +1,22 @@
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Navbar from './components/Navbar'; // Import your custom Navbar component
+import SessionScreen from './components/SessionScreen';
+import NewSession from './components/NewSession';
+import JoinSession from './components/JoinSession';
+import ParticipantsScreen from './components/ParticipantsScreen';
+
 const Stack = createNativeStackNavigator();
-import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import SessionScreen from "./components/SessionScreen";
-import Navbar from "./components/Navbar";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
-import NewSession from "./components/NewSession";
-import JoinSession from "./components/JoinSession";
-import ParticipantsScreen from "./components/ParticipantsScreen";
 
 const App = () => {
-  const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
-  const [fontsLoaded, error] = useFonts({
-    "Rubik-Regular": require("./assets/fonts/Rubik-Regular.ttf"),
-    "Manrope-Medium": require("./assets/fonts/Manrope-Medium.ttf"),
-    "Manrope-SemiBold": require("./assets/fonts/Manrope-SemiBold.ttf"),
-  });
-
-  if (!fontsLoaded && !error) {
-    return null;
-  }
-
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          header: Navbar, // Set your custom Navbar component as the header
+        }}
+      >
         <Stack.Screen name="Home" component={SessionScreen} />
         <Stack.Screen name="NewSession" component={NewSession} />
         <Stack.Screen name="JoinSession" component={JoinSession} />
@@ -33,4 +25,5 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
 export default App;

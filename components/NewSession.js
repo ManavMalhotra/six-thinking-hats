@@ -16,12 +16,15 @@ const NewSession = ({ navigation, route }) => {
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState("");
   const [capacity, setCapacity] = useState("");
+  // const [roomId, setroomId] = useState("");
 
   const socket = useSocketStore((state) => state.socket);
   const userId = useSocketStore((state) => state.userId);
   const setuserId = useSocketStore((state) => state.setuserId);
   const isAdmin = useSocketStore((state) => state.isAdmin);
   const setAdmin = useSocketStore((state) => state.setAdmin);
+  const roomId = useSocketStore((state) => state.roomId);
+  const setroomId = useSocketStore((state) => state.setroomId);
   const setMySession = useSocketStore((state) => state.setMySession);
 
   useEffect(() => {
@@ -35,21 +38,25 @@ const NewSession = ({ navigation, route }) => {
     console.log("Creating room...");
     const newUserId = socket.id;
     setuserId(newUserId);
-
-    console.log("socket id: ", newUserId);
-
     setAdmin(true);
-
     const data = { userId: newUserId, title, description, duration, capacity };
 
     socket.emit("createRoom", data);
 
     socket.on("roomCreated", (data) => {
-      console.log("roomCreated: ", data);
-      setMySession((prev) => prev.append(data));
+      console.log("roomCreated: ", data.roomId);
+
+      if (data.roomId != null){
+        setroomId(data.roomId);
+      }
+
+      setMySession((prev) => prev.concat(data));
     });
 
-    navigation.navigate("Participants", { data });
+    console.log("Creating roomId.........: ", roomId);
+
+      navigation.navigate("Participants", { roomId });
+    
   };
 
   return (

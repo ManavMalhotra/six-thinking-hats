@@ -1,39 +1,48 @@
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import { Image } from "expo-image";
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 const Navbar = () => {
+  const navigation = useNavigation();
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   return (
-    <SafeAreaView>
-      <View style={styles.navbar}>
+    <View style={styles.navbar}>
+      <TouchableOpacity onPress={handleBackPress}>
         <Image
           style={styles.icon}
-          source={require("../assets/menu.svg")}
-          contentFit="cover"
+          source={require('../assets/menu.svg')}
+          resizeMode="cover"
         />
+      </TouchableOpacity>
 
-        <Image
-          style={styles.tinkLogo}
-          source={require("../assets/tink-logo-1.png")}
-        />
-        <Image
-          style={styles.menuIconLayout}
-          contentFit="cover"
-          source={require("../assets/ellipse-15.svg")}
-        />
-      </View>
-    </SafeAreaView>
+      <Image
+        style={styles.tinkLogo}
+        source={require('../assets/tink-logo-1.png')}
+        resizeMode="contain"
+      />
+      <Image
+        style={styles.menuIconLayout}
+        source={require('../assets/ellipse-15.svg')}
+        resizeMode="cover"
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  navbar:{
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  navbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 10,
     paddingTop: 50,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: "lightgrey",
+    borderBottomColor: 'lightgrey',
   },
   icon: {
     width: 50,
@@ -48,4 +57,5 @@ const styles = StyleSheet.create({
     width: 24,
   },
 });
+
 export default Navbar;

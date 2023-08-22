@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet } from "react-native";
 import useSocketStore from "../store";
+import HatColor from "./HatColor";
 
-const ParticipantsScreen = ({ navigation }) => {
+const ParticipantsScreen = ({ navigation, route }) => {
   // const [userId, setUserId] = useState("");
   const [participants, setParticipants] = useState([]);
   // const { userId, isAdmin, hatColor } = useSocketStore();
@@ -11,15 +12,12 @@ const ParticipantsScreen = ({ navigation }) => {
   const userId = useSocketStore((state) => state.userId);
   const isAdmin = useSocketStore((state) => state.isAdmin);
   const hatColor = useSocketStore((state) => state.hatColor);
+  const roomId = useSocketStore((state) => state.roomId);
+  const setHatColor = useSocketStore((state) => state.setHatColor);
   const setAdmin = useSocketStore((state) => state.setAdmin);
 
-  // const {roomId} = navigation.state.params;
 
-  console.log("userId: ", userId);
-  console.log("isAdmin: ", isAdmin);
-  console.log("hatColor: ", hatColor);
-
-
+  console.log("roomId Participants: ", roomId);
   useEffect(() => {
     if (!socket) {
       navigation.navigate("Home");
@@ -30,10 +28,16 @@ const ParticipantsScreen = ({ navigation }) => {
       for (let i = 0; i < users.length; i++) {
         console.log(users[i]);
         users[i].name = users[i].name || "Anonymous";
+        if(users[i].id === userId) {
+          setHatColor(users[i].hatRole);
+        }
       }
       setParticipants(users);
     });
   }, []);
+  console.log("userId: ", userId);
+  console.log("isAdmin: ", isAdmin);
+  console.log("hatColor: ", hatColor);
 
   return (
     <SafeAreaView>
@@ -41,6 +45,7 @@ const ParticipantsScreen = ({ navigation }) => {
         <View>
           <Text>Participants in the room:</Text>
           <Text>Admin ID: {userId}</Text>
+          <Text>Room ID: {roomId}</Text>
           {participants.map((participant) => (
             <Text style={styles.participant} key={participant.id}>
               {participant.id} : {participant.hatRole}
@@ -48,8 +53,11 @@ const ParticipantsScreen = ({ navigation }) => {
           ))}
         </View>
       ) : (
-        <View>
-          <Text>Non-admin ID: {userId}</Text>
+        <View style={styles.participant}>
+          <Text>User ID: {userId}</Text>
+          <Text>Room ID: {roomId}</Text>
+
+          <HatColor hatColor={hatColor} />
         </View>
       )}
     </SafeAreaView>

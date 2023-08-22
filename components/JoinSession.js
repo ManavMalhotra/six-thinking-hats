@@ -21,24 +21,21 @@ const JoinSession = ({ navigation }) => {
   const setuserId = useSocketStore((state) => state.setuserId);
   const isAdmin = useSocketStore((state) => state.isAdmin);
   const setAdmin = useSocketStore((state) => state.setAdmin);
-
   const setMySession = useSocketStore((state) => state.setMySession);
 
   useEffect(() => {
-    if (!socket) {
-      useSocketStore.getState().connect();
-    }
+    useSocketStore.getState().connect();
+    return () => {
+      useSocketStore.getState().disconnect();
+    };
   }, []);
 
   const joinRoom = () => {
     console.log("Joining room...");
-    console.log("socket id: ", userId);
-    console.log("socket: ", useSocketStore(
-      (state) => state.userId
-    ) )
-;
+    const newUserId = socket.id;
+    setuserId(newUserId);
 
-    const data = { roomId, userId };
+    const data = { roomId, userId: newUserId };
 
     socket.emit("joinRoom", data);
     setAdmin(false);
