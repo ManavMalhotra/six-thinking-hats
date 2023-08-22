@@ -1,56 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet } from "react-native";
-import { SocketManager } from "../SocketManager";
+import useSocketStore from "../store";
 
 const ParticipantsScreen = ({ navigation }) => {
-  const [socket, setSocket] = useState(null);
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
   const [participants, setParticipants] = useState([]);
+  // const { userId, isAdmin, hatColor } = useSocketStore();
 
-  if (socket) {
-    socket.onAny((event, ...args) => {
-      console.log(event, args);
-    });
-  }
+  const socket = useSocketStore((state) => state.socket);
+  const userId = useSocketStore((state) => state.userId);
+  const isAdmin = useSocketStore((state) => state.isAdmin);
+  const hatColor = useSocketStore((state) => state.hatColor);
+  const setAdmin = useSocketStore((state) => state.setAdmin);
+
+  // const {roomId} = navigation.state.params;
+
+  console.log("userId: ", userId);
+  console.log("isAdmin: ", isAdmin);
+  console.log("hatColor: ", hatColor);
+
 
   useEffect(() => {
-    const socket = SocketManager.getSocket();
-    setSocket(socket);
-    setUserId(socket.id);
-
+    if (!socket) {
+      navigation.navigate("Home");
+    }
     // Listen for the roomJoined event
-    socket.on("roomData", ({users}) => {
+    socket.on("roomData", ({ users }) => {
       // Update participants state with the received data
       for (let i = 0; i < users.length; i++) {
         console.log(users[i]);
         users[i].name = users[i].name || "Anonymous";
       }
-        setParticipants(users);
+      setParticipants(users);
     });
-
-    // Clean up the event listener when the component unmounts
-    return () => {
-      socket.off("roomJoined");
-    };
   }, []);
 
   return (
     <SafeAreaView>
-      <View>
-        <Text>Participants in the room:</Text>
-        {participants.map((participant) => (
-          <Text style={styles.participant} key={participant.id}>{participant.id} : {participant.hatRole}</Text>
-        ))}
-      </View>
+      {isAdmin ? (
+        <View>
+          <Text>Participants in the room:</Text>
+          <Text>Admin ID: {userId}</Text>
+          {participants.map((participant) => (
+            <Text style={styles.participant} key={participant.id}>
+              {participant.id} : {participant.hatRole}
+            </Text>
+          ))}
+        </View>
+      ) : (
+        <View>
+          <Text>Non-admin ID: {userId}</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-    participant: {
-        fontSize: 20,
-        fontWeight: "bold",
-    },
-})
+  participant: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});
 
 export default ParticipantsScreen;
