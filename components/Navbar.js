@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { useNavigation } from '@react-navigation/native';
 
 const Navbar = () => {
@@ -15,19 +16,16 @@ const Navbar = () => {
         <Image
           style={styles.icon}
           source={require('../assets/menu.svg')}
-          resizeMode="cover"
         />
       </TouchableOpacity>
 
       <Image
         style={styles.tinkLogo}
         source={require('../assets/tink-logo-1.png')}
-        resizeMode="contain"
       />
       <Image
         style={styles.menuIconLayout}
         source={require('../assets/ellipse-15.svg')}
-        resizeMode="cover"
       />
     </View>
   );
@@ -41,12 +39,13 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 50,
     backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
+    // borderBottomWidth: 1,
+    // borderBottomColor: 'lightgrey',
   },
   icon: {
     width: 50,
     height: 50,
+    color: 'black',
   },
   tinkLogo: {
     width: 106,
