@@ -24,7 +24,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          header: Navbar, // Set your custom Navbar component as the header
+          header: Navbar,
         }}
       >
         <Stack.Screen name="Home" component={SessionScreen} />

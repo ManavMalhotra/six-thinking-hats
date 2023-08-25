@@ -1,28 +1,50 @@
-import { StyleSheet, Text, View, SafeAreaView, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import { Image } from "expo-image";
+import { horizontalScale, moderateScale, verticalScale } from "../metric";
 
 const SessionScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
-      <View style={styles.groupParentFlexBox}>
+      <View style={styles.groupParent}>
         <View style={styles.groupWrapper}>
-          <Text style={styles.mySession}>My Sessions</Text>
-          <Text style={[styles.history]}>History</Text>
+          <TouchableOpacity>
+            <Text style={[styles.mySession]}>My Session</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={[styles.history]}>History</Text>
+          </TouchableOpacity>
         </View>
+
         <Image
           style={styles.noSession}
           contentFit="cover"
           source={require("../assets/no-session.svg")}
         />
-        <Button
-          title="+ Create a new Session"
-          onPress={() => navigation.navigate("NewSession")}
-        />
-        <Button
-          title=" Join Session"
-          styles={styles.joinSessionBtn}
-          onPress={() => navigation.navigate("JoinSession")}
-        />
+
+        <Text style={styles.noSessionText}>You have no session yet!.</Text>
+
+        <View style={styles.sessionBtn}>
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={() => navigation.navigate("NewSession")}
+          >
+            <Text style={styles.buttonText}>+ Create new Session</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={() => navigation.navigate("JoinSession")}
+          >
+            <Text style={styles.buttonText}>Join Session</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -30,15 +52,15 @@ const SessionScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   groupParent: {
-    width: "100%",
-    height: "50",
-    flexDirection: "row",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "100%",
     textAlign: "center",
-    alignItems: "center",
-    marginTop: 40,
+    alignContent: "center",
+    paddingHorizontal: horizontalScale(20),
+    paddingVertical: verticalScale(20),
   },
   groupWrapper: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -50,9 +72,27 @@ const styles = StyleSheet.create({
   noSession: {
     width: 220,
     height: 220,
+    alignSelf: "center",
   },
-  joinSessionBtn: {
-    marginTop: 20,
+  noSessionText: {
+    textAlign: "center",
+  },
+  sessionBtn: {
+    alignContent: "flex-end",
+  },
+  createButton: {
+    borderRadius: 25,
+    borderColor: "#000",
+    borderWidth: moderateScale(1),
+    backgroundColor: "white",
+    height: horizontalScale(50),
+    textAlign: "center",
+    justifyContent: "center",
+    marginHorizontal: horizontalScale(10),
+    marginVertical: verticalScale(10),
+  },
+  buttonText: {
+    textAlign: "center",
   },
 });
 

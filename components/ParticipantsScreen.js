@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet } from "react-native";
 import useSocketStore from "../store";
 import HatColor from "./HatColor";
+import TimerComponent from "./TimerComponent";
 
 const ParticipantsScreen = ({ navigation, route }) => {
   // const [userId, setUserId] = useState("");
@@ -43,6 +44,7 @@ const ParticipantsScreen = ({ navigation, route }) => {
     <SafeAreaView>
       {isAdmin ? (
         <View>
+          <TimerComponent duration="10" />
           <Text>Participants in the room:</Text>
           <Text>Admin ID: {userId}</Text>
           <Text>Room ID: {roomId}</Text>

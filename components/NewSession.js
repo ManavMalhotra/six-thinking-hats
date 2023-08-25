@@ -43,7 +43,7 @@ const NewSession = ({ navigation, route }) => {
     const newUserId = socket.id;
     setuserId(newUserId);
     setAdmin(true);
-    const data = { userId: newUserId, title, description, duration, capacity };
+    const data = { userId: newUserId, title, description, selectedDuration, capacity };
 
     socket.emit("createRoom", data);
 
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     height: "100%",
     textAlign: "center",
     alignContent: "center",
+    fontFamily: FontFamily.manropeSemiBold,
   },
   header: {
     fontFamily: FontFamily.manropeSemiBold,
@@ -157,7 +158,8 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   label: {
-    opacity: 0.7,
+    opacity: 0.5,
+    marginBottom: 3,
   },
   codeTextBox: {
     borderWidth: 2,
@@ -166,7 +168,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 300,
     textAlignVertical: "top",
-    paddingVertical: 5,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
   },
   description: {
     height: 100,
