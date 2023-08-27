@@ -1,19 +1,20 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
-import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
-import { horizontalScale, moderateScale, verticalScale } from "../metric";
+import { horizontalScale, verticalScale } from "../metric";
 import { useUserStore } from "../store";
+import { Image } from "expo-image";
 
-const Navbar = () => {
-  const navigation = useNavigation();
-
+const Navbar = ({ navigation }) => {
   const profilePic = useUserStore((state) => state.userProfilePic);
 
   const handleBackPress = () => {
     navigation.goBack();
   };
-  
+
+  const tinkLogoSource = require("../assets/tink-logo-1.png");
+  const defaultProfilePicSource = require("../assets/ellipse-15.svg");
+
   return (
     <SafeAreaView>
       <View style={styles.navbar}>
@@ -21,18 +22,12 @@ const Navbar = () => {
           <Image style={styles.icon} source={require("../assets/menu.svg")} />
         </TouchableOpacity>
 
+        <Image style={styles.tinkLogo} source={tinkLogoSource} />
+
         <Image
-          style={styles.tinkLogo}
-          source={require("../assets/tink-logo-1.png")}
+          style={styles.icon}
+          source={profilePic ? { uri: profilePic } : defaultProfilePicSource}
         />
-        {profilePic ? (
-          <Image style={styles.icon} source={{ uri: profilePic }} />
-        ) : (
-          <Image
-            style={styles.icon}
-            source={require("../assets/ellipse-15.svg")}
-          />
-        )}
       </View>
     </SafeAreaView>
   );
@@ -51,15 +46,10 @@ const styles = StyleSheet.create({
   icon: {
     width: 50,
     height: 50,
-    color: "black",
   },
   tinkLogo: {
     width: 106,
     height: 32,
-  },
-  menuIconLayout: {
-    height: 24,
-    width: 24,
   },
 });
 

@@ -9,31 +9,31 @@ import {
 } from "react-native";
 
 import { useState, useEffect } from "react";
-// import { SocketManager } from "../SocketManager";
-import useSocketStore from "../store";
+import socketSingleton from "../SocketManager";
+import { useSocketStore } from "../store";
 
 const JoinSession = ({ navigation }) => {
   // const [socket, setSocket] = useState(null);
   // const [userId, setUserId] = useState("");
   const [roomId, setroomId] = useState("");
-  const socket = useSocketStore((state) => state.socket);
+  const [socket, setSocket] = useState(null);
   const userId = useSocketStore((state) => state.userId);
-  const setuserId = useSocketStore((state) => state.setuserId);
+  const setUserId = useSocketStore((state) => state.setUserId);
   const isAdmin = useSocketStore((state) => state.isAdmin);
   const setAdmin = useSocketStore((state) => state.setAdmin);
   const setMySession = useSocketStore((state) => state.setMySession);
 
-  useEffect(() => {
-    useSocketStore.getState().connect();
-    return () => {
-      useSocketStore.getState().disconnect();
-    };
-  }, []);
 
+  useEffect(() => {
+    console.log("_______JoinSession.js_______")
+    console.log("socket initialize: ");
+    socketSingleton.initSocket();
+    setSocket(socketSingleton.getSocket());
+  }, []);
   const joinRoom = () => {
     console.log("Joining room...");
     const newUserId = socket.id;
-    setuserId(newUserId);
+    setUserId(newUserId);
 
     const data = { roomId, userId: newUserId };
 

@@ -1,43 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet } from "react-native";
-import useSocketStore from "../store";
+import { useSocketStore } from "../store";
+import socketSingleton from "../SocketManager";
 import HatColor from "./HatColor";
 import TimerComponent from "./TimerComponent";
 import UserCard from "./UserCard";
-const ParticipantsScreen = ({ navigation, route }) => {
-  // const [userId, setUserId] = useState("");
-  const [participants, setParticipants] = useState([]);
-  // const { userId, isAdmin, hatColor } = useSocketStore();
 
-  const socket = useSocketStore((state) => state.socket);
+const ParticipantsScreen = ({ navigation }) => {
+  // data which come from store
+  // userId: null,
+  // isAdmin: null,
+  // hatColor: null,
+  // roomId: null,
+  // mySession: [],
+
   const userId = useSocketStore((state) => state.userId);
   const isAdmin = useSocketStore((state) => state.isAdmin);
   const hatColor = useSocketStore((state) => state.hatColor);
-  const roomId = useSocketStore((state) => state.roomId);
   const setHatColor = useSocketStore((state) => state.setHatColor);
-  const setAdmin = useSocketStore((state) => state.setAdmin);
+  const roomId = useSocketStore((state) => state.roomId);
+  const mySession = useSocketStore((state) => state.mySession);
 
-  console.log("roomId Participants: ", roomId);
+  const [participants, setParticipants] = useState([]);
+
+  const socket = socketSingleton.getSocket();
+
   useEffect(() => {
-    if (!socket) {
-      navigation.navigate("Home");
-    }
-    // Listen for the roomJoined event
     socket.on("roomData", ({ users }) => {
-      // Update participants state with the received data
-      for (let i = 0; i < users.length; i++) {
-        console.log(users[i]);
-        users[i].name = users[i].name || "Anonymous";
-        if (users[i].id === userId) {
-          setHatColor(users[i].hatRole);
-        }
+      console.log("Event roomData received");
+      console.log(users);
+
+      const updatedUsers = users.map((user) => ({
+        ...user,
+        name: user.name || "Anonymous",
+      }));
+
+      setParticipants(updatedUsers);
+      console.log("Participants updated", participants);
+
+      const currentUser = users.find((user) => user.id === userId);
+      if (currentUser) {
+        console.log("currentUser", currentUser);
+        let color = currentUser.hatRole;
+        setHatColor(color);
       }
-      setParticipants(users);
     });
-  }, []);
-  console.log("userId: ", userId);
-  console.log("isAdmin: ", isAdmin);
-  console.log("hatColor: ", hatColor);
+  }, [userId, ]);
 
   const userInfo = {
     name: "Anonymous",

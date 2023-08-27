@@ -1,30 +1,35 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useFonts } from "expo-font";
+
 import Navbar from "./components/Navbar";
 import SessionScreen from "./components/SessionScreen";
 import NewSession from "./components/NewSession";
 import JoinSession from "./components/JoinSession";
 import ParticipantsScreen from "./components/ParticipantsScreen";
-import { useFonts } from "expo-font";
 import ProfilePage from "./components/ProfilePage";
+
 const Stack = createNativeStackNavigator();
 
-const App = () => {
-  const [fontsLoaded, error] = useFonts({
+const MainApp = () => {
+  const [fontsLoaded] = useFonts({
     "Rubik-Regular": require("./assets/fonts/Rubik-Regular.ttf"),
     "Manrope-Regular": require("./assets/fonts/Manrope-Regular.ttf"),
     "Manrope-SemiBold": require("./assets/fonts/Manrope-SemiBold.ttf"),
   });
-  if (!fontsLoaded && !error) {
+  
+  if (!fontsLoaded) {
     return null;
   }
+
+  const renderHeader = (props) => <Navbar {...props} />;
 
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          header: Navbar,
+          header: renderHeader,
         }}
       >
         <Stack.Screen name="Home" component={ProfilePage} />
@@ -37,4 +42,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default MainApp;

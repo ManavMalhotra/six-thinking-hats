@@ -1,22 +1,23 @@
-// import { io } from "socket.io-client";
+import io from "socket.io-client";
 
-// // const createRoom = (data) => {
-// //   socket.emit("createRoom", data);
-// // };
+let socket;
 
-// // const joinRoom = (data) => {
-// //   console.log("Joining room...");
-// //   // console.log("socket id: ", userId);
-// //   // const data = { roomId, userId };
+const initSocket = () => {
+  socket = io("http://192.168.100.17:8000");
+  return socket;
+};
 
-// //   socket.emit("joinRoom", data);
-
-// //   // navigation.navigate("Participants");
-// // };
-
-
-// export const SocketManager = {
-//   getSocket: () => socket,
-//   createRoom,
-//   joinRoom
-// };
+const getSocket = () => {
+  if (!socket) {
+    // throw new Error("Call init first");
+    socket = io("http://192.168.100.17:8000");
+  }
+  console.log("socket from socket manager: ", socket);
+  return socket;
+};
+const socketSingleton = {
+    initSocket,
+    getSocket,
+  };
+  
+export default socketSingleton;

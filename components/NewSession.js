@@ -1,72 +1,69 @@
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
   TextInput,
   StyleSheet,
-  SafeAreaView,
-  Button,
   TouchableOpacity,
 } from "react-native";
-import { useEffect, useState } from "react";
-import useSocketStore from "../store";
-import { Color, FontFamily, FontSize, Padding, Border } from "../GlobalStyles";
+import { useSocketStore } from "../store";
+import socketSingleton from "../SocketManager";
+import { FontFamily, FontSize, Color } from "../GlobalStyles";
+import { Input } from "@rneui/themed";
 
-const NewSession = ({ navigation, route }) => {
+const NewSession = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [capacity, setCapacity] = useState("");
-  // const [roomId, setroomId] = useState("");
+  const [duration, setDuration] = useState("");
 
-  const socket = useSocketStore((state) => state.socket);
-  const userId = useSocketStore((state) => state.userId);
-  const setuserId = useSocketStore((state) => state.setuserId);
-  const isAdmin = useSocketStore((state) => state.isAdmin);
-  const setAdmin = useSocketStore((state) => state.setAdmin);
+  const [socket, setSocket] = useState(null);
+
   const roomId = useSocketStore((state) => state.roomId);
+  const setAdmin = useSocketStore((state) => state.setAdmin);
   const setroomId = useSocketStore((state) => state.setroomId);
   const setMySession = useSocketStore((state) => state.setMySession);
+  const setUserId = useSocketStore((state) => state.setUserId);
+
+  useEffect(() => {
+    console.log('socket initialize: ')
+    socketSingleton.initSocket();
+    setSocket(socketSingleton.getSocket(), console.log("socket: ", socket));
+
+  }, []);
 
   const handleDurationSelection = (duration) => {
     setSelectedDuration(duration);
   };
 
-  useEffect(() => {
-    useSocketStore.getState().connect();
-    return () => {
-      useSocketStore.getState().disconnect();
-    };
-  }, []);
-
   const createRoom = () => {
+    console.log("socket: ", socket);
+    setUserId(socket.id);
     console.log("Creating room...");
-    const newUserId = socket.id;
-    setuserId(newUserId);
-    setAdmin(true);
-    const data = { userId: newUserId, title, description, selectedDuration, capacity };
+    const data = {
+      title,
+      description,
+      selectedDuration,
+      capacity,
+    };
 
     socket.emit("createRoom", data);
-
     socket.on("roomCreated", (data) => {
       console.log("roomCreated: ", data.roomId);
-
-      if (data.roomId != null) {
-        setroomId(data.roomId);
-      }
-
-      setMySession((prev) => prev.concat(data));
+      setroomId(data.roomId);
     });
 
-    console.log("Creating roomId.........: ", roomId);
+    // console.log("Creating roomId.........: ", roomId);
 
-    navigation.navigate("Participants", { roomId });
+    navigation.navigate("Participants");
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>New Session</Text>
 
-      <View style={styles.inputContainer}>
+      {/* <View style={styles.inputContainer}>
         <Text style={styles.label}>Title</Text>
         <TextInput
           style={[styles.input, styles.codeTextBox]}
@@ -130,9 +127,53 @@ const NewSession = ({ navigation, route }) => {
       </View>
       <TouchableOpacity style={styles.createButton} onPress={createRoom}>
         <Text style={styles.buttonText}>Create</Text>
+      </TouchableOpacity> */}
+
+      <Input
+        label="Title"
+        labelStyle={styles.label}
+        onChangeText={(text) => setTitle(text)}
+        value={title}
+        inputStyle={[styles.inputContainer]}
+        inputContainerStyle={styles.inputBox}
+      />
+      <Input
+        label="Description"
+        labelStyle={styles.label}
+        onChangeText={(text) => setDescription(text)}
+        value={description}
+        inputStyle={[styles.inputContainer]}
+        inputContainerStyle={styles.inputBox}
+      />
+      <Input
+        label="Duration"
+        labelStyle={styles.label}
+        onChangeText={(text) => setDuration(text)}
+        value={duration}
+        inputStyle={[styles.inputContainer]}
+        inputContainerStyle={styles.inputBox}
+      />
+      <Input
+        label="Capacity"
+        labelStyle={styles.label}
+        onChangeText={(text) => setCapacity(text)}
+        value={capacity}
+        inputStyle={[styles.inputContainer]}
+        inputContainerStyle={styles.inputBox}
+      />
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => createRoom()}
+      >
+        <Text style={styles.buttonText}>Create</Text>
       </TouchableOpacity>
     </View>
   );
+};
+
+const buttonStyles = {
+  backgroundColor: "black",
+  borderRadius: 25,
 };
 
 const styles = StyleSheet.create({
@@ -194,8 +235,7 @@ const styles = StyleSheet.create({
     borderColor: "green",
   },
   createButton: {
-    backgroundColor: "black",
-    borderRadius: 25,
+    ...buttonStyles,
   },
   buttonText: {
     color: "white",
