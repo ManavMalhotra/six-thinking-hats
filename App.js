@@ -28,6 +28,7 @@ const App = () => {
         }}
       >
         <Stack.Screen name="Home" component={ProfilePage} />
+        <Stack.Screen name="Session" component={SessionScreen} />
         <Stack.Screen name="NewSession" component={NewSession} />
         <Stack.Screen name="JoinSession" component={JoinSession} />
         <Stack.Screen name="Participants" component={ParticipantsScreen} />

@@ -15,12 +15,21 @@ import { horizontalScale, verticalScale, moderateScale } from "../metric";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 
-const ProfilePage = (navigation) => {
+import { useUserStore } from "../store";
+
+const ProfilePage = ({ navigation }) => {
   const [name, setName] = useState("");
   const [organisation, setOrganisation] = useState("");
   const [role, setRole] = useState("");
   const [checked, setChecked] = React.useState(false);
   const [image, setImage] = useState(null);
+
+  const setUserName = useUserStore((state) => state.setUserName);
+  const setUserOrganisation = useUserStore(
+    (state) => state.setUserOrganisation
+  );
+  const setUserDesignation = useUserStore((state) => state.setUserDesignation);
+  const setUserProfilePic = useUserStore((state) => state.setUserProfilePic);
 
   const createProfile = () => {
     if (!name || !organisation || !role) {
@@ -32,7 +41,14 @@ const ProfilePage = (navigation) => {
     } else {
       console.log("Creating profile...");
       const data = { name, organisation, role };
+      if (image) {
+        setUserProfilePic(image);
+      }
+      setUserName(name);
+      setUserOrganisation(organisation);
+      setUserDesignation(role);
       console.log("data: ", data);
+      navigation.navigate("Session");
     }
   };
 

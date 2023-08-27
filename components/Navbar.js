@@ -3,14 +3,17 @@ import { View, StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import { horizontalScale, moderateScale, verticalScale } from "../metric";
+import { useUserStore } from "../store";
 
 const Navbar = () => {
   const navigation = useNavigation();
 
+  const profilePic = useUserStore((state) => state.userProfilePic);
+
   const handleBackPress = () => {
     navigation.goBack();
   };
-
+  
   return (
     <SafeAreaView>
       <View style={styles.navbar}>
@@ -22,10 +25,14 @@ const Navbar = () => {
           style={styles.tinkLogo}
           source={require("../assets/tink-logo-1.png")}
         />
-        <Image
-          style={styles.menuIconLayout}
-          source={require("../assets/ellipse-15.svg")}
-        />
+        {profilePic ? (
+          <Image style={styles.icon} source={{ uri: profilePic }} />
+        ) : (
+          <Image
+            style={styles.icon}
+            source={require("../assets/ellipse-15.svg")}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -37,8 +44,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "white",
-    // borderBottomWidth: 1,
-    // borderBottomColor: "lightgrey",
     marginTop: verticalScale(20),
     paddingHorizontal: horizontalScale(20),
     paddingVertical: verticalScale(20),

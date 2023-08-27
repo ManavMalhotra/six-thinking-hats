@@ -33,4 +33,22 @@ const useSocketStore = create((set) => ({
 
 }));
 
-export default useSocketStore;
+const useUserStore = create((set) => ({
+  // user name 
+  // user organisation
+  // user designation
+  // user profile pic
+
+  userName: null,
+  userOrganisation: null,
+  userDesignation: null,
+  userProfilePic: null,
+
+  setUserName: (userName) => set({ userName }),
+  setUserOrganisation: (userOrganisation) => set({ userOrganisation }),
+  setUserDesignation: (userDesignation) => set({ userDesignation }),
+  setUserProfilePic: (userProfilePic) => set({ userProfilePic }),
+}));
+
+export { useSocketStore, useUserStore };
+
