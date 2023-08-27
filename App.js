@@ -7,7 +7,7 @@ import NewSession from "./components/NewSession";
 import JoinSession from "./components/JoinSession";
 import ParticipantsScreen from "./components/ParticipantsScreen";
 import { useFonts } from "expo-font";
-
+import ProfilePage from "./components/ProfilePage";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -27,7 +27,7 @@ const App = () => {
           header: Navbar,
         }}
       >
-        <Stack.Screen name="Home" component={SessionScreen} />
+        <Stack.Screen name="Home" component={ProfilePage} />
         <Stack.Screen name="NewSession" component={NewSession} />
         <Stack.Screen name="JoinSession" component={JoinSession} />
         <Stack.Screen name="Participants" component={ParticipantsScreen} />
