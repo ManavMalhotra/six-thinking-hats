@@ -9,6 +9,7 @@ import CreateSession from "./components/CreateSession";
 import JoinSession from "./components/JoinSession";
 import ParticipantsScreen from "./components/ParticipantsScreen";
 import ProfilePage from "./components/ProfilePage";
+import LoginPage from "./components/LoginPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,7 +33,8 @@ const App = () => {
           header: renderHeader,
         }}
       >
-        <Stack.Screen name="Home" component={ProfilePage} />
+        <Stack.Screen name="Home" component={LoginPage} />
+        <Stack.Screen name="Profile" component={ProfilePage} />
         <Stack.Screen name="SessionScreen" component={SessionScreen} />
         <Stack.Screen name="CreateSession" component={CreateSession} />
         <Stack.Screen name="JoinSession" component={JoinSession} />
