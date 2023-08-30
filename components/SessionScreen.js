@@ -33,7 +33,7 @@ const SessionScreen = ({ navigation }) => {
         <View style={styles.sessionBtn}>
           <TouchableOpacity
             style={styles.createButton}
-            onPress={() => navigation.navigate("NewSession")}
+            onPress={() => navigation.navigate("CreateSession")}
           >
             <Text style={styles.buttonText}>+ Create new Session</Text>
           </TouchableOpacity>

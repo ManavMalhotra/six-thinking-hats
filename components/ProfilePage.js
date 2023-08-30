@@ -1,38 +1,52 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-} from "react-native";
-import { Color, FontFamily, FontSize, Padding, Border } from "../GlobalStyles";
-import { CheckBox } from "react-native-elements";
-import { Input } from "@rneui/themed";
-
-import { horizontalScale, verticalScale, moderateScale } from "../metric";
-
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CheckBox, Input } from "react-native-elements";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
-
 import { useUserStore } from "../store";
+import { horizontalScale, verticalScale } from "../metric";
+import { Color, FontFamily, FontSize } from "../GlobalStyles";
 
 const ProfilePage = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [organisation, setOrganisation] = useState("");
-  const [role, setRole] = useState("");
   const [checked, setChecked] = React.useState(false);
-  const [image, setImage] = useState(null);
 
-  const setUserName = useUserStore((state) => state.setUserName);
-  const setUserOrganisation = useUserStore(
-    (state) => state.setUserOrganisation
-  );
-  const setUserDesignation = useUserStore((state) => state.setUserDesignation);
-  const setUserProfilePic = useUserStore((state) => state.setUserProfilePic);
+  const {
+    userName,
+    userOrganisation,
+    userRole,
+    userProfilePic,
 
-  const createProfile = () => {
-    if (!name || !organisation || !role) {
+    setUserName,
+    setUserOrganisation,
+    setUserRole,
+    setUserProfilePic,
+  } = useUserStore();
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        // Fetch profile data from local storage
+        const storedData = await AsyncStorage.getItem("profileData");
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          setUserName(parsedData.userName);
+          setUserOrganisation(parsedData.userOrganisation);
+          setUserRole(parsedData.userRole);
+          setUserProfilePic(parsedData.userProfilePic);
+          navigation.navigate("SessionScreen");
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+        navigation.navigate("Home");
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  const createProfile = async () => {
+    if (!userName || !userOrganisation || !userRole) {
       alert("Please fill all fields");
       return;
     } else if (!checked) {
@@ -40,15 +54,19 @@ const ProfilePage = ({ navigation }) => {
       return;
     } else {
       console.log("Creating profile...");
-      const data = { name, organisation, role };
-      if (image) {
-        setUserProfilePic(image);
-      }
-      setUserName(name);
-      setUserOrganisation(organisation);
-      setUserDesignation(role);
+
+      const data = { userName, userOrganisation, userRole, userProfilePic };
+
       console.log("data: ", data);
-      navigation.navigate("Session");
+
+      try {
+        // Save profile data to local storage
+        await AsyncStorage.setItem("profileData", JSON.stringify(data));
+      } catch (error) {
+        console.error("Error saving profile data:", error);
+      }
+
+      navigation.navigate("SessionScreen");
     }
   };
 
@@ -64,55 +82,48 @@ const ProfilePage = ({ navigation }) => {
     console.log("✅ Iamge Uploaded Successfully!!!");
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      setUserProfilePic(result.assets[0].uri);
     }
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleImageUpload}>
-        {image ? (
-          <Image
-            style={{
-              width: 100,
-              height: 100,
-              alignSelf: "center",
-            }}
-            source={{ uri: image }}
-          />
-        ) : (
-          <Image
-            style={{
-              width: 100,
-              height: 100,
-              alignSelf: "center",
-            }}
-            source={require("../assets/imageUpload.svg")}
-          />
-        )}
+        <Image
+          style={{
+            width: 100,
+            height: 100,
+            alignSelf: "center",
+          }}
+          source={
+            userProfilePic
+              ? userProfilePic
+              : require("../assets/imageUpload.svg")
+          }
+        />
       </TouchableOpacity>
 
       <Input
         label="Full Name"
         labelStyle={styles.label}
-        onChangeText={(text) => setName(text)}
-        value={name}
+        onChangeText={(text) => setUserName(text)}
+        value={userName}
         inputStyle={[styles.inputContainer]}
         inputContainerStyle={styles.inputBox}
       />
       <Input
         label="Organisation"
         labelStyle={styles.label}
-        onChangeText={(text) => setOrganisation(text)}
-        value={organisation}
+        onChangeText={(text) => setUserOrganisation(text)}
+        value={userOrganisation}
         inputStyle={[styles.inputContainer]}
         inputContainerStyle={styles.inputBox}
       />
       <Input
         label="Role"
         labelStyle={styles.label}
-        onChangeText={(text) => setRole(text)}
-        value={role}
+        onChangeText={(text) => setUserRole(text)}
+        value={userRole}
         inputStyle={[styles.inputContainer]}
         inputContainerStyle={styles.inputBox}
       />
@@ -192,29 +203,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProfilePage;
-
-// import * as React from "react";
-// import { CheckBox } from "@rneui/base";
-
-// export default () => {
-//   const [checked, setChecked] = React.useState(false);
-//   return (
-//     <CheckBox
-//       checked={checked}
-//       checkedColor="#0F0"
-//       checkedTitle="Great!"
-//       containerStyle={{ width: "75%" }}
-//       onIconPress={() => setChecked(!checked)}
-//       onLongIconPress={() =>
-//         console.log("onLongIconPress()")
-//       }
-//       onLongPress={() => console.log("onLongPress()")}
-//       onPress={() => console.log("onPress()")}
-//       size={30}
-//       textStyle={{}}
-//       title="Check for Awesomeness"
-//       titleProps={{}}
-//       uncheckedColor="#F00"
-//     />
-//   );
-// }

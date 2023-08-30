@@ -9,15 +9,13 @@ const initSocket = () => {
 
 const getSocket = () => {
   if (!socket) {
-    // throw new Error("Call init first");
-    socket = io("http://192.168.100.17:8000");
+    throw new Error("Call init first");
   }
-  console.log("socket from socket manager: ", socket);
   return socket;
 };
 const socketSingleton = {
-    initSocket,
-    getSocket,
-  };
-  
+  initSocket,
+  getSocket,
+};
+
 export default socketSingleton;

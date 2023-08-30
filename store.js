@@ -2,12 +2,14 @@ import { create } from "zustand";
 import io from "socket.io-client";
 
 const useSocketStore = create((set) => ({
+  socket: null,
   userId: null,
-  isAdmin: null,
+  isAdmin: false,
   hatColor: null,
   roomId: null,
   mySession: [],
 
+  setSocket: (newSocket) => set((state) => ({ socket: newSocket })),
   setUserId: (userId) => set({ userId }),
   setAdmin: (isAdmin) => set({ isAdmin }),
   setHatColor: (hatColor) => set({ hatColor }),
@@ -16,19 +18,14 @@ const useSocketStore = create((set) => ({
 }));
 
 const useUserStore = create((set) => ({
-  // user name
-  // user organisation
-  // user designation
-  // user profile pic
-
-  userName: null,
-  userOrganisation: null,
-  userDesignation: null,
+  userName: "",
+  userOrganisation: "",
+  userRole: "",
   userProfilePic: null,
 
   setUserName: (userName) => set({ userName }),
   setUserOrganisation: (userOrganisation) => set({ userOrganisation }),
-  setUserDesignation: (userDesignation) => set({ userDesignation }),
+  setUserRole: (userRole) => set({ userRole }),
   setUserProfilePic: (userProfilePic) => set({ userProfilePic }),
 }));
 

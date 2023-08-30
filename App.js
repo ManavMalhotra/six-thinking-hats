@@ -5,20 +5,20 @@ import { useFonts } from "expo-font";
 
 import Navbar from "./components/Navbar";
 import SessionScreen from "./components/SessionScreen";
-import NewSession from "./components/NewSession";
+import CreateSession from "./components/CreateSession";
 import JoinSession from "./components/JoinSession";
 import ParticipantsScreen from "./components/ParticipantsScreen";
 import ProfilePage from "./components/ProfilePage";
 
 const Stack = createNativeStackNavigator();
 
-const MainApp = () => {
+const App = () => {
   const [fontsLoaded] = useFonts({
     "Rubik-Regular": require("./assets/fonts/Rubik-Regular.ttf"),
     "Manrope-Regular": require("./assets/fonts/Manrope-Regular.ttf"),
     "Manrope-SemiBold": require("./assets/fonts/Manrope-SemiBold.ttf"),
   });
-  
+
   if (!fontsLoaded) {
     return null;
   }
@@ -33,8 +33,8 @@ const MainApp = () => {
         }}
       >
         <Stack.Screen name="Home" component={ProfilePage} />
-        <Stack.Screen name="Session" component={SessionScreen} />
-        <Stack.Screen name="NewSession" component={NewSession} />
+        <Stack.Screen name="SessionScreen" component={SessionScreen} />
+        <Stack.Screen name="CreateSession" component={CreateSession} />
         <Stack.Screen name="JoinSession" component={JoinSession} />
         <Stack.Screen name="Participants" component={ParticipantsScreen} />
       </Stack.Navigator>
@@ -42,4 +42,4 @@ const MainApp = () => {
   );
 };
 
-export default MainApp;
+export default App;
