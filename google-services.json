@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "20463026653",
+    "project_id": "six-thinking-hats-f7c30",
+    "storage_bucket": "six-thinking-hats-f7c30.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:20463026653:android:b413699b3e28c04371b634",
+        "android_client_info": {
+          "package_name": "com.imanavmalhotra.ironman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "20463026653-h84fkhef7ftnju55jj7bd517fmm93rn1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imanavmalhotra.ironman",
+            "certificate_hash": "35ab5f20b39b3d78bc986e3aaee3852aee6299e6"
+          }
+        },
+        {
+          "client_id": "20463026653-qb1jbir5bb7ilfvkkg8gh8e1702igq9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaQTJxrebVL3vobjeR8qPFnRXq0TvZklA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "20463026653-qb1jbir5bb7ilfvkkg8gh8e1702igq9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
