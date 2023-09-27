@@ -31,11 +31,19 @@ const ProfilePage = ({ navigation }) => {
         const storedData = await AsyncStorage.getItem("profileData");
         if (storedData) {
           const parsedData = JSON.parse(storedData);
-          setUserName(parsedData.userName);
-          setUserOrganisation(parsedData.userOrganisation);
-          setUserRole(parsedData.userRole);
-          setUserProfilePic(parsedData.userProfilePic);
-          navigation.navigate("SessionScreen");
+          if (
+            parsedData.userName &&
+            parsedData.userOrganisation &&
+            parsedData.userRole
+          ) {
+            setUserName(parsedData.userName);
+            setUserOrganisation(parsedData.userOrganisation);
+            setUserRole(parsedData.userRole);
+            setUserProfilePic(parsedData.userProfilePic);
+            navigation.navigate("SessionScreen");
+          } else {
+            console.log("Profile data is incomplete");
+          }
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -47,6 +55,8 @@ const ProfilePage = ({ navigation }) => {
   }, []);
 
   const createProfile = async () => {
+    console.log("Creating Profile");
+
     if (!userName || !userOrganisation || !userRole) {
       alert("Please fill all fields");
       return;
@@ -108,7 +118,6 @@ const ProfilePage = ({ navigation }) => {
           console.log("Keyboard event", frames);
         }}
       >
-        
         <View>
           <Input
             label="Full Name"

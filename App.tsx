@@ -14,6 +14,7 @@ import JoinSession from "./components/screens/JoinSession";
 import ParticipantsScreen from "./components/screens/ParticipantsScreen";
 import ProfilePage from "./components/screens/ProfilePage";
 import LoginPage from "./components/screens/LoginPage";
+import Test from "./components/screens/Test";
 
 import { PaperProvider } from "react-native-paper";
 

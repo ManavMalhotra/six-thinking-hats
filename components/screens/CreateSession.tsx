@@ -97,6 +97,7 @@ const CreateSession = ({ navigation }) => {
         onChangeText={(text) => setDuration(text)}
         value={duration}
         inputStyle={[styles.inputContainer]}
+        keyboardType="numeric"
       />
       <Input
         label="Capacity"
@@ -104,6 +105,7 @@ const CreateSession = ({ navigation }) => {
         onChangeText={(text) => setCapacity(text)}
         value={capacity}
         inputStyle={[styles.inputContainer]}
+        keyboardType="numeric"
       />
       <TouchableOpacity style={styles.createButton} onPress={createRoom}>
         <Text style={styles.buttonText}>Create</Text>
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     textAlign: "left",
+    
   },
   label: {
     opacity: 0.5,

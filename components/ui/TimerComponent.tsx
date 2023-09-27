@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { Color, FontFamily, FontSize, Padding, Border } from "../../GlobalStyles";
 import { horizontalScale, moderateScale, verticalScale } from "../../metric";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const TimerComponent = ({ duration }) => {
   const initialTime = duration * 60; // 10 minutes in seconds
@@ -55,7 +56,7 @@ const TimerComponent = ({ duration }) => {
       </View>
 
       <TouchableOpacity onPress={running ? stopTimer : startTimer}>
-        <Image style={styles.icon} source={require("../../assets/play.svg")} />
+        <Icon name={running ? "pause" : "play-arrow"} size={50} />
       </TouchableOpacity>
 
       <TouchableOpacity onPress={resetTimer}>

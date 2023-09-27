@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, StyleSheet } from "react-native";
+import { View, SafeAreaView, StyleSheet, Share } from "react-native";
 import socketSingleton from "../../SocketManager";
 import HatColor from "../ui/HatColor";
 import TimerComponent from "../ui/TimerComponent";
 import UserCard from "../ui/UserCard";
 import { useUserStore, useSocketStore } from "../../store";
 import { Text } from "react-native-paper";
+import Accordion from "../ui/Accordion";
+import { IconButton } from "react-native-paper";
 
 import { Image } from "expo-image";
 
-import { Share } from "react-native";
-
-import { Button } from "react-native-paper";
-import * as Clipboard from "expo-clipboard";
-
-import emptySession from "../../assets/emptypartcipants.png";
-import { set } from "react-native-reanimated";
+import emptySession from "../../assets/emptyPartcipants.png";
 
 const ParticipantsScreen = ({ navigation }) => {
   const { socket, setSocket } = useSocketStore();
@@ -29,69 +25,38 @@ const ParticipantsScreen = ({ navigation }) => {
   const { userId, setUserId, roomId, hatColor, setHatColor, isAdmin } =
     useSocketStore();
 
-  useEffect(() => {
-    console.log("_______JoinSession.js_______");
-    console.log("socket initialize: ");
-    socketConnection();
-  }, []);
-
-  const socketConnection = async () => {
-    const initializedSocket = await socketSingleton.initSocket();
-    setSocket(initializedSocket);
-    initializedSocket.on("connect", () => {
-      console.log("socket connected: ", initializedSocket.id);
-      let id = initializedSocket.id;
-      setUserId(id);
-      console.log("socket id: ", id);
-    });
-  };
-
-  const handleShare = async () => {
-    try {
-      const result = await Share.share({
-        message: roomId.toString(),
-      });
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-          console.log("shared with activity type of result.activityType");
-        } else {
-          // shared
-          console.log("shared");
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-        console.log("dismissed");
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+  useEffect(() => {}, []);
 
   useEffect(() => {
     socket.on("roomJoined", (data) => {
       console.log("roomJoined event received: ", data);
-      // data if admin is true then set the admin
 
-      data.map((user) => {
-        console.log("user: ", user);
+      data.forEach((user) => {
+        console.log("Participants: ", user);
         if (user.isAdmin) {
           setAdminUser(user);
+        } else if (!participants.some((p) => p.id === user.id)) {
+          setParticipants((prevParticipants) => [...prevParticipants, user]);
         }
-        else{
-          participants.push(user);
-        } 
       });
-
-
-      setParticipants(data);
     });
 
     return () => {
       socket.off("roomJoined");
     };
-  }, [participants, setParticipants]);
+  }, [participants, setParticipants, setAdminUser]);
+  console.log("Participants State: ", participants);
+  console.log("!__________________________!");
+
+  const changeEveryoneHatColor = (color) => {
+    return () => {
+      socket.emit("changeHatColor", {
+        roomId,
+        userId,
+        hatColor: color,
+      });
+    };
+  };
 
   let sampleParticipants = [
     {
@@ -120,23 +85,69 @@ const ParticipantsScreen = ({ navigation }) => {
     <SafeAreaView>
       {isAdmin ? (
         <View>
-          <TimerComponent duration="10" />
-          <Text>Participants in the room:</Text>
-          <Text>Admin ID: {userId.toString()}</Text>
-          <Text>Room ID: {roomId.toString()}</Text>
-
-          {participants.map((user, index) => {
-            if(user.isAdmin){
-              return null;
+          <Accordion
+            headerText="About Session"
+            content={
+              <>
+                <TimerComponent duration={10} />
+                <View style={styles.hatColors}>
+                  <IconButton
+                    style={styles.hatStyle}
+                    icon="checkbox-blank-circle"
+                    iconColor="black"
+                    size={60}
+                    onPress={changeEveryoneHatColor("black")}
+                  />
+                  <IconButton
+                    style={styles.hatStyle}
+                    icon="checkbox-blank-circle"
+                    iconColor="white"
+                    size={60}
+                  />
+                  <IconButton
+                    style={styles.hatStyle}
+                    icon="checkbox-blank-circle"
+                    iconColor="yellow"
+                    size={60}
+                  />
+                  <IconButton
+                    style={styles.hatStyle}
+                    icon="checkbox-blank-circle"
+                    iconColor="green"
+                    size={60}
+                  />
+                  <IconButton
+                    style={styles.hatStyle}
+                    icon="checkbox-blank-circle"
+                    iconColor="red"
+                    size={60}
+                  />
+                </View>
+              </>
             }
-            return <UserCard key={index} user={user} roomId={roomId} adminCard={false} />;
-          })}
+          />
+
+          <Accordion
+            headerText="Participants"
+            content={participants.map((user, index) => {
+              if (user.isAdmin) {
+                return null;
+              }
+              return (
+                <UserCard
+                  key={index}
+                  user={user}
+                  roomId={roomId}
+                  adminCard={false}
+                />
+              );
+            })}
+          />
         </View>
       ) : (
         <View>
           <Text variant="headlineSmall" style={{ color: "black" }}>
             Name: {userName}
-            
           </Text>
           <UserCard user={adminUser} roomId={roomId} adminCard={true} />
           {/* <HatColor hatColor={hatColor} /> */}
@@ -151,6 +162,17 @@ const styles = StyleSheet.create({
   participant: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  hatColors: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 0,
+    margin: 0,
+    paddingHorizontal: 50,
+  },
+  hatStyle: {
+    marginHorizontal: 0,
   },
 });
 
